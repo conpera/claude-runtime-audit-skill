@@ -1,4 +1,4 @@
 interface:
   display_name: "Claude Runtime Audit"
-  short_description: "Audit Claude Code runtime risk"
-  default_prompt: "Use $claude-runtime-audit to audit this Linux/VM/container environment for Claude Code readiness and account-risk signals."
+  short_description: "Audit Linux and native Windows Claude runtimes"
+  default_prompt: "Use $claude-runtime-audit to audit this Linux or native Windows environment for Claude Code readiness and profile-risk signals."
