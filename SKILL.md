@@ -29,15 +29,15 @@ Do not use this skill to hide, forge, or remove environment fingerprints. If the
 python3 /path/to/claude_runtime_audit.py --target-country US --scan-known-home
 ```
 
-5. For the same check on native Windows PowerShell, run:
+5. For the same check on native Windows PowerShell, use the bundled wrapper:
 
 ```powershell
-py -3 .\scripts\claude_runtime_audit.py `
-  --target-country US `
-  --scan-known-home
+.\scripts\invoke_claude_runtime_audit.ps1 `
+  -TargetCountry US `
+  -ScanKnownHome
 ```
 
-If the Windows Python launcher is unavailable, replace `py -3` with `python`.
+The wrapper locates `py`, `python`, or `python3`, maps PowerShell parameters to the Python auditor, and can save the report with `-OutputPath`. If script execution is blocked by organizational policy, follow that policy rather than weakening it.
 
 6. For a strict “US workstation consistency” check on Linux, run:
 
@@ -49,7 +49,16 @@ python3 /path/to/claude_runtime_audit.py \
   --scan-known-home
 ```
 
-7. On Windows, use the same flags and pass either an IANA timezone such as `America/Los_Angeles` or a Windows timezone ID such as `Pacific Standard Time`.
+7. On Windows, pass either an IANA timezone such as `America/Los_Angeles` or a Windows timezone ID such as `Pacific Standard Time`:
+
+```powershell
+.\scripts\invoke_claude_runtime_audit.ps1 `
+  -TargetCountry US `
+  -TargetTimezone "Pacific Standard Time" `
+  -StrictUsWorkstation `
+  -ScanKnownHome `
+  -OutputPath .\claude-runtime-audit.md
+```
 8. Treat `FAIL` as blockers, `WARN` as evidence to disclose or fix legitimately, and `INFO` as context. Do not interpret absence of one fingerprint as proof of a physical or compliant machine.
 
 ## Interpreting results
@@ -62,7 +71,7 @@ Read `references/audit-policy.md` when scoring policy, redaction expectations, o
 
 ## Bundled script
 
-`scripts/claude_runtime_audit.py` is a dependency-free Python 3.9+ script. It selects Linux or native Windows collectors automatically and keeps one shared JSON/Markdown report format. It performs read-only checks for:
+`scripts/claude_runtime_audit.py` is a dependency-free Python 3.9+ script. It selects Linux or native Windows collectors automatically and keeps one shared JSON/Markdown report format. `scripts/invoke_claude_runtime_audit.ps1` is the Windows PowerShell 5.1+ entry point. It performs no configuration changes and forwards only explicit audit options. The audit performs read-only checks for:
 
 - OS, architecture, filesystem, container, and virtualization evidence from Linux `/proc`/DMI or Windows CIM/BIOS.
 - Locale, timezone, enabled Chinese locales/languages, and CJK font hints from Linux tools or native Windows APIs/registry.
